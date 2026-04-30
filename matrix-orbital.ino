@@ -88,6 +88,9 @@ void loop(){
       {
         lcd.write(serial_getch()); //get each pattern byte
       }
+      // Volta para DDRAM para evitar que os proximos bytes sejam
+      // interpretados como dados de CGRAM (caracteres "lixo" na tela).
+      lcd.command(0x80);
       break;
     case 83:  //show blinking block cursor
       lcd.command(0b00001111);
