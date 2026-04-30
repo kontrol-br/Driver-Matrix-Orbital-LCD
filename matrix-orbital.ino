@@ -84,7 +84,7 @@ void loop(){
       break;
     case 78:  //define custom char
       lcd.command(64 + (serial_getch() * 8));  //get+set char address
-      for (temp = 7; temp != 0; temp--)
+      for (temp = 0; temp < 8; temp++)
       {
         lcd.write(serial_getch()); //get each pattern byte
       }
