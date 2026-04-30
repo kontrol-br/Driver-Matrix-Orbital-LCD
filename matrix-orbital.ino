@@ -1,10 +1,16 @@
 // include the library code:
 #include <LiquidCrystal.h>
 
-// these constants won't change.  But you can change the size of
-// your LCD using them:
+// Configuracao do LCD (escolha apenas UMA opcao)
+// 16x2:
 const int numRows = 2;
 const int numCols = 16;
+const byte rowAddressMap[] = {0x00, 0x40};
+
+// 16x4:
+// const int numRows = 4;
+// const int numCols = 16;
+// const byte rowAddressMap[] = {0x00, 0x40, 0x10, 0x50};
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 10, 5, 4, 3, 2);
@@ -14,7 +20,8 @@ LiquidCrystal lcd(12, 11, 10, 5, 4, 3, 2);
 void setup() { 
   Serial.begin(9600);
   // set up the LCD's number of rows and columns: 
-  lcd.begin(numRows, numCols);
+  // LiquidCrystal.begin recebe primeiro COLUNAS e depois LINHAS.
+  lcd.begin(numCols, numRows);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("** WELCOME TO **");
@@ -52,20 +59,10 @@ void loop(){
       break;
     case 71:  //set cursor position
       temp = (serial_getch() - 1);  //get column byte
-      switch (serial_getch())  //get row byte
+      byte row = serial_getch();  //get row byte (1-based)
+      if (row >= 1 && row <= numRows)
       {
-        //line 1 is already set up
-      case 2:
-        temp += 0x40;
-        break;
-      case 3:
-        temp += 0x14;
-        break;
-      case 4:
-        temp += 0x54;
-        break;
-      default:
-        break;
+        temp += rowAddressMap[row - 1];
       }
       lcd.command(0b10000000 + temp);
       break;
